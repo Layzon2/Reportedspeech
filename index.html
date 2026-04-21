@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reported Speech – Rozszerzone Notatki</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --accent: #f5c842;
+    --accent2: #e05c5c;
+    --accent3: #5cc8e0;
+    --text: #e8e8ee;
+    --muted: #8888aa;
+    --border: #2a2a36;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    padding: 2rem 1rem 4rem;
+  }
+  .page { max-width: 820px; margin: 0 auto; }
+  header {
+    border-left: 4px solid var(--accent);
+    padding-left: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  header .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+  header p { color: var(--muted); font-size: 0.95rem; margin-top: 0.5rem; }
+  section { margin-bottom: 2.8rem; }
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    color: #fff;
+  }
+  .def-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 1rem;
+  }
+  .def-box p { font-size: 0.95rem; }
+  .tense-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1.5rem; }
+  .tense-table thead tr { background: var(--surface2); }
+  .tense-table thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .tense-table thead th:first-child { color: var(--accent3); }
+  .tense-table thead th:last-child  { color: var(--accent); }
+  .tense-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  .tense-table tbody tr:hover { background: var(--surface2); }
+  .tense-table td { padding: 0.75rem 1rem; vertical-align: top; }
+  .tense-table td:first-child { color: var(--accent3); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .tense-table td:last-child { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .tense-table td:nth-child(2) { color: var(--muted); font-size: 0.82rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .card .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.6rem;
+    display: inline-block;
+  }
+  .tag-direct  { background: rgba(92,200,224,0.15); color: var(--accent3); }
+  .tag-reported{ background: rgba(245,200,66,0.15); color: var(--accent); }
+  .card .line { font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; padding: 0.3rem 0; }
+  .card .line.direct   { color: var(--accent3); }
+  .card .line.reported { color: var(--accent); }
+  .card .arrow { color: var(--muted); font-size: 0.75rem; padding: 0.1rem 0; display: block; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+  @media(max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+  .mini-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+  }
+  .mini-card h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.7rem;
+  }
+  .mini-card h4.blue { color: var(--accent3); }
+  .mini-card h4.yellow { color: var(--accent); }
+  .mini-card ul { list-style: none; }
+  .mini-card ul li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.2rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .mini-card ul li:last-child { border-bottom: none; }
+  .mini-card ul li span:first-child { color: var(--accent3); }
+  .mini-card ul li span:last-child  { color: var(--accent); }
+  .steps { list-style: none; margin-bottom: 1.2rem; }
+  .steps li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+    align-items: flex-start;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    background: var(--accent);
+    color: #000;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    font-weight: 600;
+  }
+  .verb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+  .verb-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+  }
+  .verb-card h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+  .verb-card .pattern { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; color: var(--accent); margin-bottom: 0.4rem; }
+  .verb-card .ex { font-size: 0.8rem; color: var(--muted); }
+  .note {
+    background: rgba(224,92,92,0.08);
+    border: 1px solid rgba(224,92,92,0.3);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+  .note strong { color: var(--accent2); }
+  .pronoun-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 1.2rem; }
+  .pronoun-table th {
+    background: var(--surface2);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .pronoun-table td {
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+  }
+  .pronoun-table td:first-child { color: var(--accent3); }
+  .pronoun-table td:last-child  { color: var(--accent); }
+  .pronoun-table tr:hover td { background: var(--surface2); }
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+  .q-card .q-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+  .q-card .rule { font-size: 0.9rem; margin-bottom: 0.7rem; }
+  .q-card .line { font-family: 'IBM Plex Mono', monospace; font-size: 0.84rem; padding: 0.2rem 0; }
+  .q-card .line.d { color: var(--accent3); }
+  .q-card .line.r { color: var(--accent); }
+  footer {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--border);
+    margin-top: 3rem;
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="label">English Grammar &middot; Notatki Rozszerzone</div>
+    <h1>Reported<br>Speech</h1>
+    <p>Mowa zalezna &mdash; czasy, zaimki, pytania, rozkazy i pelne transformacje</p>
+  </header>
+
+  <!-- 01 DEFINICJA -->
+  <section>
+    <div class="section-title">01 &mdash; Definicja</div>
+    <h2>Czym jest Reported Speech?</h2>
+    <div class="def-box" style="border-left-color:var(--accent3)">
+      <p><strong style="color:var(--accent3)">Direct Speech</strong> &mdash; przytaczamy slowa dokladnie, w cudzyslowie.<br>
+      <em style="color:var(--muted)">"I am tired," she said.</em></p>
+    </div>
+    <div class="def-box">
+      <p><strong style="color:var(--accent)">Reported Speech</strong> &mdash; relacjonujemy co ktos powiedzial, bez cudzyslowu. Zmieniaja sie czasy, zaimki i wyrazenia czasu/miejsca.<br>
+      <em style="color:var(--muted)">She said (that) she was tired.</em></p>
+    </div>
+  </section>
+
+  <!-- 02 BACKSHIFT -->
+  <section>
+    <div class="section-title">02 &mdash; Cofanie Czasow (Backshift)</div>
+    <h2>Tabela Zmian Czasow</h2>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.2rem;">Gdy czasownik wprowadzajacy jest w przeszlosci (<em>said, told, asked&hellip;</em>), czas w zdaniu zaleznym cofa sie o jeden stopien.</p>
+    <table class="tense-table">
+      <thead>
+        <tr>
+          <th>Direct Speech</th>
+          <th>Przyklad (Direct)</th>
+          <th>Reported Speech</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Present Simple</td>
+          <td style="color:#666;font-size:0.75rem">"I work here."</td>
+          <td>Past Simple<br><em style="color:#777;font-size:0.75rem">He said he worked there.</em></td>
+        </tr>
+        <tr>
+          <td>Present Continuous</td>
+          <td style="color:#666;font-size:0.75rem">"I am working."</td>
+          <td>Past Continuous<br><em style="color:#777;font-size:0.75rem">He said he was working.</em></td>
+        </tr>
+        <tr>
+          <td>Present Perfect</td>
+          <td style="color:#666;font-size:0.75rem">"I have finished."</td>
+          <td>Past Perfect<br><em style="color:#777;font-size:0.75rem">He said he had finished.</em></td>
+        </tr>
+        <tr>
+          <td>Present Perf. Cont.</td>
+          <td style="color:#666;font-size:0.75rem">"I've been waiting."</td>
+          <td>Past Perfect Cont.<br><em style="color:#777;font-size:0.75rem">He said he had been waiting.</em></td>
+        </tr>
+        <tr>
+          <td>Past Simple</td>
+          <td style="color:#666;font-size:0.75rem">"I went home."</td>
+          <td>Past Perfect<br><em style="color:#777;font-size:0.75rem">He said he had gone home.</em></td>
+        </tr>
+        <tr>
+          <td>Past Continuous</td>
+          <td style="color:#666;font-size:0.75rem">"I was reading."</td>
+          <td>Past Perf. Continuous<br><em style="color:#777;font-size:0.75rem">He said he had been reading.</em></td>
+        </tr>
+        <tr>
+          <td>will</td>
+          <td style="color:#666;font-size:0.75rem">"I will call."</td>
+          <td>would<br><em style="color:#777;font-size:0.75rem">He said he would call.</em></td>
+        </tr>
+        <tr>
+          <td>can</td>
+          <td style="color:#666;font-size:0.75rem">"I can swim."</td>
+          <td>could<br><em style="color:#777;font-size:0.75rem">He said he could swim.</em></td>
+        </tr>
+        <tr>
+          <td>may</td>
+          <td style="color:#666;font-size:0.75rem">"It may rain."</td>
+          <td>might<br><em style="color:#777;font-size:0.75rem">He said it might rain.</em></td>
+        </tr>
+        <tr>
+          <td>must / have to</td>
+          <td style="color:#666;font-size:0.75rem">"You must leave."</td>
+          <td>had to<br><em style="color:#777;font-size:0.75rem">He said I had to leave.</em></td>
+        </tr>
+        <tr>
+          <td>shall</td>
+          <td style="color:#666;font-size:0.75rem">"Shall I help?"</td>
+          <td>should / would<br><em style="color:#777;font-size:0.75rem">He asked if he should help.</em></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <strong>Bez cofania czasu</strong> &mdash; jesli czasownik wprowadzajacy jest w Present (<em>says, tells&hellip;</em>) lub jesli mowimy o fakcie wciaz aktualnym, czas NIE cofa sie.<br>
+      <em style="color:var(--muted)">"The Earth orbits the Sun." &rarr; He says the Earth orbits the Sun.</em>
+    </div>
+    <div class="note" style="background:rgba(92,200,224,0.07);border-color:rgba(92,200,224,0.3)">
+      <strong style="color:var(--accent3)">Modalne bez zmian</strong> &mdash; <em>would, could, should, might, ought to</em> nie cofaja sie (sa juz w formie przeszlej).<br>
+      <em style="color:var(--muted)">"You should rest." &rarr; She said I should rest.</em>
+    </div>
+  </section>
+
+  <!-- 03 DIRECT -> REPORTED -->
+  <section>
+    <div class="section-title">03 &mdash; Direct &rarr; Reported</div>
+    <h2>Jak zamienic Direct na Reported?</h2>
+    <ul class="steps">
+      <li><span class="step-num">1</span><span>Usun cudzyslowie i dodaj <strong>that</strong> (opcjonalne, zalecane).</span></li>
+      <li><span class="step-num">2</span><span>Cofnij czas o jeden stopien (patrz tabela powyzej).</span></li>
+      <li><span class="step-num">3</span><span>Zmien zaimki osobowe i dziercawcze zgodnie z kontekstem.</span></li>
+      <li><span class="step-num">4</span><span>Zmien wyrazenia czasu i miejsca (patrz tabela nizej).</span></li>
+      <li><span class="step-num">5</span><span>Zmien <em>say to sb</em> na <em>tell sb</em> (np. <em>told me</em> zamiast <em>said to me</em>).</span></li>
+    </ul>
+
+    <div class="card">
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"I am studying for my exam tomorrow," Anna said.</div>
+      <span class="arrow">&darr; Present Continuous &rarr; Past Continuous; I &rarr; she; tomorrow &rarr; the next day</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">Anna said (that) she was studying for her exam the next day.</div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"We have already eaten," they said.</div>
+      <span class="arrow">&darr; Present Perfect &rarr; Past Perfect; we &rarr; they</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">They said (that) they had already eaten.</div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"I will help you," Mark told me.</div>
+      <span class="arrow">&darr; will &rarr; would; I &rarr; he; you &rarr; me</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">Mark told me (that) he would help me.</div>
+    </div>
+  </section>
+
+  <!-- 04 REPORTED -> DIRECT -->
+  <section>
+    <div class="section-title">04 &mdash; Reported &rarr; Direct</div>
+    <h2>Jak zamienic Reported na Direct?</h2>
+    <ul class="steps">
+      <li><span class="step-num">1</span><span>Dodaj cudzyslowie i usun <em>that</em>.</span></li>
+      <li><span class="step-num">2</span><span>Przesu&#324; czas <strong>do przodu</strong>: Past Simple &rarr; Present Simple, Past Perfect &rarr; Past Simple / Present Perfect itd.</span></li>
+      <li><span class="step-num">3</span><span>Przywroc zaimki do oryginalnego kontekstu mowiacego.</span></li>
+      <li><span class="step-num">4</span><span>Przywroc wyrazenia czasu/miejsca (<em>the next day &rarr; tomorrow</em>, <em>there &rarr; here</em> itd.).</span></li>
+    </ul>
+
+    <div class="card">
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">She told me she had been waiting for hours.</div>
+      <span class="arrow">&darr; Past Perfect Continuous &rarr; Present Perfect Continuous; she &rarr; I</span>
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"I have been waiting for hours," she said.</div>
+    </div>
+
+    <div class="card">
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">He said he would call me the following day.</div>
+      <span class="arrow">&darr; would &rarr; will; the following day &rarr; tomorrow; me &rarr; you</span>
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"I will call you tomorrow," he said.</div>
+    </div>
+  </section>
+
+  <!-- 05 ZAIMKI -->
+  <section>
+    <div class="section-title">05 &mdash; Zaimki</div>
+    <h2>Zmiany Zaimkow</h2>
+    <table class="pronoun-table">
+      <thead><tr><th>Direct (mowiacy)</th><th>Reported (o mowiacym)</th></tr></thead>
+      <tbody>
+        <tr><td>I</td><td>he / she</td></tr>
+        <tr><td>me</td><td>him / her</td></tr>
+        <tr><td>my</td><td>his / her</td></tr>
+        <tr><td>mine</td><td>his / hers</td></tr>
+        <tr><td>myself</td><td>himself / herself</td></tr>
+        <tr><td>we</td><td>they</td></tr>
+        <tr><td>our</td><td>their</td></tr>
+        <tr><td>you (sluchacz)</td><td>I / me / they / them (zalezy od kontekstu)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 06 CZAS I MIEJSCE -->
+  <section>
+    <div class="section-title">06 &mdash; Czas i Miejsce</div>
+    <h2>Zmiany Wyrazen Czasu i Miejsca</h2>
+    <div class="two-col">
+      <div class="mini-card">
+        <h4 class="blue">Direct &rarr; Reported</h4>
+        <ul>
+          <li><span>now</span><span>then / at that moment</span></li>
+          <li><span>today</span><span>that day</span></li>
+          <li><span>yesterday</span><span>the day before</span></li>
+          <li><span>tomorrow</span><span>the next / following day</span></li>
+          <li><span>last week</span><span>the previous week</span></li>
+          <li><span>next week</span><span>the following week</span></li>
+          <li><span>ago</span><span>before / earlier</span></li>
+          <li><span>here</span><span>there</span></li>
+          <li><span>this</span><span>that</span></li>
+          <li><span>these</span><span>those</span></li>
+          <li><span>come</span><span>go</span></li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4 class="yellow">Reported &rarr; Direct</h4>
+        <ul>
+          <li><span>then / at that moment</span><span>now</span></li>
+          <li><span>that day</span><span>today</span></li>
+          <li><span>the day before</span><span>yesterday</span></li>
+          <li><span>the next / following day</span><span>tomorrow</span></li>
+          <li><span>the previous week</span><span>last week</span></li>
+          <li><span>the following week</span><span>next week</span></li>
+          <li><span>before / earlier</span><span>ago</span></li>
+          <li><span>there</span><span>here</span></li>
+          <li><span>that</span><span>this</span></li>
+          <li><span>those</span><span>these</span></li>
+          <li><span>go</span><span>come</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 PYTANIA -->
+  <section>
+    <div class="section-title">07 &mdash; Pytania</div>
+    <h2>Reported Questions</h2>
+    <div class="q-card">
+      <div class="q-type">Yes/No Questions &mdash; pytania z odpowiedzia tak/nie</div>
+      <div class="rule">Uzywamy <strong style="color:var(--accent)">if / whether</strong> + szyk zdania twierdzacego (bez inwersji, bez do/does/did).</div>
+      <div class="line d">"Are you tired?" &rarr;</div>
+      <div class="line r">She asked if / whether I was tired.</div>
+      <br>
+      <div class="line d">"Did he call?" &rarr;</div>
+      <div class="line r">She asked if he had called.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-type">Wh- Questions &mdash; pytania ze slowem pytajacym</div>
+      <div class="rule">Slowo pytajace (<em>what, where, when, why, who, how&hellip;</em>) zostaje, ale szyk zmienia sie na twierdzacy. Brak inwersji, brak do/does/did.</div>
+      <div class="line d">"Where do you live?" &rarr;</div>
+      <div class="line r">He asked me where I lived.</div>
+      <br>
+      <div class="line d">"What time will you arrive?" &rarr;</div>
+      <div class="line r">She asked what time I would arrive.</div>
+    </div>
+    <div class="note">
+      <strong>Uwaga na szyk!</strong> W reported questions NIE ma inwersji.<br>
+      &cross; She asked where <em>did I live</em>. &nbsp;|&nbsp; &check; She asked where <em>I lived</em>.
+    </div>
+  </section>
+
+  <!-- 08 ROZKAZY -->
+  <section>
+    <div class="section-title">08 &mdash; Rozkazy i Prosby</div>
+    <h2>Reported Commands &amp; Requests</h2>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1rem;">Rozkazy i prosBy (imperative) zamieniamy na <strong style="color:var(--accent)">told / asked + sb + (not) to + infinitive</strong>.</p>
+    <div class="card">
+      <span class="tag tag-direct">Rozkaz (twierdzacy)</span>
+      <div class="line direct">"Close the window!" he said to me.</div>
+      <span class="arrow">&darr; told + me + to + infinitive</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">He told me to close the window.</div>
+    </div>
+    <div class="card">
+      <span class="tag tag-direct">Rozkaz (przeczacy)</span>
+      <div class="line direct">"Don't touch that!" she said.</div>
+      <span class="arrow">&darr; told + sb + not to + infinitive</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">She told me not to touch that.</div>
+    </div>
+    <div class="card">
+      <span class="tag tag-direct">Prosba (uprzejma)</span>
+      <div class="line direct">"Could you please open the door?" he said.</div>
+      <span class="arrow">&darr; asked + sb + to + infinitive</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">He asked me to open the door.</div>
+    </div>
+  </section>
+
+  <!-- 09 REPORTING VERBS -->
+  <section>
+    <div class="section-title">09 &mdash; Reporting Verbs</div>
+    <h2>Czasowniki Wprowadzajace</h2>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1rem;">Zamiast <em>said/told</em> mozna uzac bardziej precyzyjnych czasownikow:</p>
+    <div class="verb-grid">
+      <div class="verb-card">
+        <h4>+ that</h4>
+        <div class="pattern">verb + (that) + clause</div>
+        <div class="ex">admit, agree, claim, complain, deny, explain, insist, mention, promise, reply, state, suggest, warn</div>
+      </div>
+      <div class="verb-card">
+        <h4>+ to-infinitive</h4>
+        <div class="pattern">verb + to + inf</div>
+        <div class="ex">agree, offer, promise, refuse, threaten<br><em style="font-size:0.75rem">He refused to help.</em></div>
+      </div>
+      <div class="verb-card">
+        <h4>+ sb + to-inf</h4>
+        <div class="pattern">verb + sb + to + inf</div>
+        <div class="ex">advise, ask, beg, encourage, invite, order, remind, tell, urge, warn</div>
+      </div>
+      <div class="verb-card">
+        <h4>+ -ing</h4>
+        <div class="pattern">verb + -ing</div>
+        <div class="ex">admit, deny, recommend, suggest<br><em style="font-size:0.75rem">He denied stealing it.</em></div>
+      </div>
+      <div class="verb-card">
+        <h4>+ sb + prep + -ing</h4>
+        <div class="pattern">verb + sb + for / on + -ing</div>
+        <div class="ex">accuse sb of -ing, apologise to sb for -ing, congratulate sb on -ing, blame sb for -ing</div>
+      </div>
+      <div class="verb-card">
+        <h4>+ wh- / if</h4>
+        <div class="pattern">verb + wh- / if + clause</div>
+        <div class="ex">ask, enquire, want to know, wonder<br><em style="font-size:0.75rem">She wondered if he'd come.</em></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 WYJATKI -->
+  <section>
+    <div class="section-title">10 &mdash; Wyjatki</div>
+    <h2>Kiedy NIE cofamy czasu?</h2>
+    <div class="def-box" style="border-left-color:var(--accent3)">
+      <p><strong style="color:var(--accent3)">1. Czasownik wprowadzajacy w Present</strong><br>
+      <em style="color:var(--muted)">She says she is tired. (nie: she was tired)</em></p>
+    </div>
+    <div class="def-box" style="border-left-color:var(--accent3)">
+      <p><strong style="color:var(--accent3)">2. Fakt ogolnie prawdziwy / naukowy</strong><br>
+      <em style="color:var(--muted)">He said the Sun is a star. (opcjonalnie bez cofania)</em></p>
+    </div>
+    <div class="def-box" style="border-left-color:var(--accent3)">
+      <p><strong style="color:var(--accent3)">3. Modalne: would, could, should, might, ought to</strong><br>
+      <em style="color:var(--muted)">She said she could help. (could pozostaje)</em></p>
+    </div>
+    <div class="def-box" style="border-left-color:var(--accent3)">
+      <p><strong style="color:var(--accent3)">4. Sytuacja wciaz aktualna</strong><br>
+      <em style="color:var(--muted)">"I love jazz." &rarr; She said she loves jazz. (jesli nadal prawdziwe)</em></p>
+    </div>
+  </section>
+
+  <!-- 11 PELNE PRZYKLADY -->
+  <section>
+    <div class="section-title">11 &mdash; Pelne Przyklady</div>
+    <h2>Zlozoone Transformacje</h2>
+    <div class="card">
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"I've been working here for five years and I'm very happy," Tom told his friend.</div>
+      <span class="arrow">&darr; Present Perfect Cont. &rarr; Past Perf. Cont.; am &rarr; was; I &rarr; he; here &rarr; there</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">Tom told his friend that he had been working there for five years and that he was very happy.</div>
+    </div>
+    <div class="card">
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">She asked me whether I had seen that film the previous week and what I had thought of it.</div>
+      <span class="arrow">&darr; had seen &rarr; saw/have seen; that &rarr; this; previous week &rarr; last week; had thought &rarr; thought</span>
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"Did you see this film last week? What did you think of it?" she asked me.</div>
+    </div>
+    <div class="card">
+      <span class="tag tag-direct">Direct</span>
+      <div class="line direct">"Don't forget to call me tomorrow!" she reminded me.</div>
+      <span class="arrow">&darr; reminded + me + not to forget; tomorrow &rarr; the next day</span>
+      <span class="tag tag-reported">Reported</span>
+      <div class="line reported">She reminded me not to forget to call her the next day.</div>
+    </div>
+  </section>
+
+  <footer>REPORTED SPEECH &middot; ENGLISH GRAMMAR &middot; ROZSZERZONE NOTATKI</footer>
+</div>
+</body>
+</html>
